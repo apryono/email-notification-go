@@ -1,8 +1,6 @@
 package main
 
-import (
-	"FEATURE/Email-Feature/email-notification-go/infra/helper"
-)
+import "github.com/email-notification-go/infra/helper"
 
 /*
 	====== **** SAMPLE DATA EMAIL NOTIFICATION **** ======
