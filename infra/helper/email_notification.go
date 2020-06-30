@@ -34,7 +34,7 @@ var (
 	authToken        = "Bearer SG.JNh5FdadadqKXSIWq8_kn232m5mA.NV_oLYuEEf-wj4A2Ip121SWSYdbLzlcrwovnLW648" // auth token
 	urlEmailSendGrip = "https://api.sample.com//v3/mail/send" // url server send grid
 	methodPost       = "POST" // using method post not get to send the email
-	mailSender       = "no-reply@thelionparcel.com"
+	mailSender       = "sample-server@mail.com"
 )
 
 // EmailNotificationSendGrip implement to send email notification
