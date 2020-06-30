@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/sirupsen/logrus"
 )
@@ -32,57 +31,60 @@ import (
 */
 
 var (
-	authToken        = os.Getenv("AUTH_EMAIL_TOKEN")
-	urlEmailSendGrip = os.Getenv("URL_EMAIL_SEND_GRIP")
+	authToken        = "Bearer SG.JNh5FdadadqKXSIWq8_kn232m5mA.NV_oLYuEEf-wj4A2Ip121SWSYdbLzlcrwovnLW648" // auth token
+	urlEmailSendGrip = "https://api.sample.com//v3/mail/send" // url server send grid
 	methodPost       = "POST" // using method post not get to send the email
-	mailSender       = "mail_sender@mail.com"
+	mailSender       = "no-reply@thelionparcel.com"
 )
 
 // EmailNotificationSendGrip implement to send email notification
 func EmailNotificationSendGrip(to, subject, message string) error {
 	payload := fmt.Sprintf(`
 		{
-			"personalizations":[
-				{
-					"to": [
-						{
-							"email": "%s"
-						}
-					],
-					"subject": "%s"
-				}
+		"personalizations": [
+		  {
+			"to": [
+			  {
+				"email": "%v"
+			  }
 			],
-			"from": {
-				"email": "%s"
-			},
-			"content": [
-				{
-					"type": "text/html",
-					"value": "%v"
-				}
-			]
-		}`, to, subject, mailSender, message) // must be sequence
+			"subject": "%v"
+		  }
+		],
+		"from": {
+		  "email": "%v"
+		},
+		"content": [
+		  {
+			"type": "text/html",
+			"value": "%v"
+		  }
+		]
+	  }`, to, subject, mailSender, message) // must be sequence
 
 	// and we generate the payload to []byte
 	bodyReader := []byte(payload)
 
+	fmt.Println("url", urlEmailSendGrip)
 	req, err := http.NewRequest(methodPost, urlEmailSendGrip, bytes.NewBuffer(bodyReader))
 	if err != nil {
 		logrus.Error("Err Request :", err)
 		return err // the return we can disable if you wan't to send the error response
 	}
 
+	// fmt.Println(payload)
 	// and then we change and set the header
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", authToken)
 
 	client := &http.Client{}
-	response, err := client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
-		logrus.Error(err)
+		logrus.Errorf("Err client : %%w", err)
 		return err
 	}
+	logrus.Println("Mail Sent !")
 
-	defer response.Body.Close()
+	defer resp.Body.Close()
 	return nil
 }
